@@ -43,3 +43,5 @@
   (read-only-mode))
 
 (provide 'emacs-pager)
+
+;;; emacs-pager.el ends here
