@@ -6,6 +6,7 @@
 ;; Created: 2014
 ;; Version: 0.1
 ;; Keywords: pager shell
+;; Package-Requires: ()
 
 ;; This file is NOT part of GNU Emacs.
 ;;
