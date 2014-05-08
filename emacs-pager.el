@@ -1,12 +1,12 @@
-;;;; emacs-pager.el --- incredibly simple mode for showing data paged by emacs-pager
+;;; emacs-pager.el --- incredibly simple mode for showing data paged by emacs-pager
 
 ;; Copyright (C) 2014 Matt Briggs <http://mattbriggs.net>
+
 ;; Author: Matt Briggs
 ;; URL: http://github.com/mbriggs/emacs-pager
 ;; Created: 2014
-;; Version: 0.1
+;; Version: 0.0.1
 ;; Keywords: pager shell
-;; Package-Requires: ()
 
 ;; This file is NOT part of GNU Emacs.
 ;;
