@@ -37,7 +37,7 @@
 ;;;###autoload
 (define-derived-mode emacs-pager-mode fundamental-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
-  (when (< 500 (line-number-at-pos (point-max)))
+  (when (> 500 (line-number-at-pos (point-max)))
     (ansi-color-apply-on-region (goto-char (point-min)) (goto-char (point-max))))
 
   (setq buffer-name "*pager*")
