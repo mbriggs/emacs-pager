@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Emacs-pager by mbriggs</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Emacs-pager</h1>
+          <h2>use a buffer as $PAGER when using emacs as your terminal</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/mbriggs/emacs-pager/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/mbriggs/emacs-pager/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/mbriggs/emacs-pager" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="emacs-pagerel" class="anchor" href="#emacs-pagerel"><span class="octicon octicon-link"></span></a>emacs-pager.el</h1>
+
+<p>I use emacs <code>shell-mode</code> buffers almost exclusively, which usually
+works great, except for when something wants to page. Things like
+<code>less</code> dont really work that great in <code>shell-mode</code>, and in general I
+would prefer a normal emacs buffer for this anyways.</p>
+
+<p>Unfortunately, <code>emacsclient</code> doesnt really work with piped content, so
+actually achieving that goal requires
+<a href="https://www.youtube.com/watch?v=cv5WLLYo-fk">Rube Goldberg-ian</a>
+changes at quite a few points.</p>
+
+<h3>
+<a name="how-this-works" class="anchor" href="#how-this-works"><span class="octicon octicon-link"></span></a>How this works</h3>
+
+<p>Well-behaving unix programs will use whatever is in <code>$PAGER</code> when
+showing data that is too big to fit in a terminal screen. So in the
+shell, we will set <code>$PAGER</code> to a script, but only if emacs is
+currently running. That script will read the piped data, and write it
+to a file in <code>/tmp</code>, read it into emacs via <code>emacsclient</code>, and wait
+until emacs is done with it. In emacs, it will use a small mode for
+ANSI coloring and keybinds.</p>
+
+<p>Given that sometimes things are paged because they are tens of thousands
+of lines long (or more), <code>emacs-pager</code> will only color the first 500 lines.
+That number can be customized with <code>emacs-pager-max-line-coloring</code></p>
+
+<h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>Make sure you are running an emacs server, so <code>emacsclient</code> will
+work. This is what I currently use in my init.el</p>
+
+<pre><code>(require 'server)
+(unless (server-running-p)
+  (server-start))
+</code></pre>
+
+<p>Make sure that <code>emacsclient</code> is available on your path.</p>
+
+<p>Put <code>emacs-pager</code> (from this repository) somewhere in your path, and
+make sure it is executable. This will be the thing that accepts the
+piped data, and sends it to emacs.</p>
+
+<p>In your <code>.bashrc</code> or <code>.zshrc</code> file, put something like this</p>
+
+<pre><code>if [ $INSIDE_EMACS ]; then
+    export PAGER="emacs-pipe"
+elif [ -x "`which less`" ]; then
+    export PAGER="`which less`"
+    export LESS="-isR"
+    alias lv="less"
+else
+    export PAGER="/bin/more"
+fi
+</code></pre>
+
+<p>Put <code>emacs-pager.el</code> somewhere on your load-path, and require it. Or,
+better then that, use something like el-get or quelpa to package it up
+in a sane manner and make it available for requiring.</p>
+
+<p>Personally, I use (and love) quelpa, here is what I have in my configs</p>
+
+<pre><code>(quelpa '(emacs-pager :repo "mbriggs/emacs-pager" :fetcher github))
+</code></pre>
+
+<p>Somewhere in your emacs init files, add the following line</p>
+
+<pre><code>(add-to-list 'auto-mode-alist '("\\.emacs-pager$" . emacs-pager-mode))
+</code></pre>
+
+<h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p><code>M-x shell</code>, and run a command that will invoke a pager (example would
+be <code>git log --pretty=oneline -n 20 --graph</code>). You should see the
+output in a new buffer. Press <code>q</code> to close the buffer.</p>
+
+<p>If you go to an external terminal and run the same command, you should
+see normal pager behaviour.</p>
+        </section>
+
+        <footer>
+          Emacs-pager is maintained by <a href="https://github.com/mbriggs">mbriggs</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
