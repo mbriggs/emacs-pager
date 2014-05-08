@@ -6,7 +6,9 @@ works great, except for when something wants to page. Things like
 would prefer a normal emacs buffer for this anyways.
 
 Unfortunately, `emacsclient` doesnt really work with piped content, so
-there are a few pieces required to make this work.
+actually achieving that goal requires
+[Rube Goldberg-ian](https://www.youtube.com/watch?v=cv5WLLYo-fk)
+changes at quite a few points.
 
 ### How this works
 
@@ -17,6 +19,10 @@ currently running. That script will read the piped data, and write it
 to a file in `/tmp`, read it into emacs via `emacsclient`, and wait
 until emacs is done with it. In emacs, it will use a small mode for
 ANSI coloring and keybinds.
+
+Given that sometimes things are paged because they are tens of thousands
+of lines long (or more), `emacs-pager` will only color the first 500 lines.
+That number can be customized with `emacs-pager-max-line-coloring`
 
 ### Installation
 
