@@ -9,6 +9,8 @@ File.open(file, 'w') do |f|
   f.write(input)
 end
 
+puts 'reading into emacs...'
+
 `emacsclient #{file}`
 
 FileUtils.rm(file)

@@ -34,11 +34,18 @@
     map)
   "Keymap for emacs pager mode.")
 
+(defcustom emacs-pager-max-line-coloring 500
+  "Maximum number of lines to ansi-color. If performance is bad when
+   loading data, reduce this number"
+  :group 'emacs-pager)
+
 ;;;###autoload
 (define-derived-mode emacs-pager-mode fundamental-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
-  (when (> 500 (line-number-at-pos (point-max)))
-    (ansi-color-apply-on-region (goto-char (point-min)) (goto-char (point-max))))
+  (ansi-color-apply-on-region (goto-char (point-min))
+                              (save-excursion
+                                (forward-line emacs-pager-max-line-coloring)
+                                (point)))
 
   (setq buffer-name "*pager*")
   (read-only-mode))
