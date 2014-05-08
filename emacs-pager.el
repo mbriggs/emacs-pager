@@ -23,7 +23,7 @@
 ;; Public License.
 
 ;;; Commentary:
-;; See readme for installation / usage
+;; See readme (http://mattbriggs.net/emacs-pager/) for installation / usage
 
 ;;; Code:
 
