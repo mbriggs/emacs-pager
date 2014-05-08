@@ -4,7 +4,6 @@
 
 ;; Author: Matt Briggs
 ;; URL: http://github.com/mbriggs/emacs-pager
-;; Created: 2014
 ;; Version: 0.0.1
 ;; Keywords: pager shell
 
@@ -38,7 +37,9 @@
 ;;;###autoload
 (define-derived-mode emacs-pager-mode fundamental-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
-  (ansi-color-apply-on-region (goto-char (point-min)) (goto-char (point-max)))
+  (when (< 500 (line-number-at-pos (point-max)))
+    (ansi-color-apply-on-region (goto-char (point-min)) (goto-char (point-max))))
+
   (setq buffer-name "*pager*")
   (read-only-mode))
 
