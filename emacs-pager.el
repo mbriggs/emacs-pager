@@ -41,6 +41,7 @@
 
 (defun emacs-pager-kill-pager ()
   "Kill pager buffer immediately"
+  (interactive)
   (set-buffer-modified-p nil)
   (server-edit))
 
