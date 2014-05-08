@@ -29,7 +29,7 @@
 
 (defvar emacs-pager-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "q") 'server-edit)
+    (define-key map (kbd "q") 'emacs-pager-kill-pager)
 
     map)
   "Keymap for emacs pager mode.")
@@ -39,9 +39,15 @@
    loading data, reduce this number"
   :group 'emacs-pager)
 
+(defun emacs-pager-kill-pager ()
+  "Kill pager buffer immediately"
+  (set-buffer-modified-p nil)
+  (server-edit))
+
 ;;;###autoload
 (define-derived-mode emacs-pager-mode fundamental-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
+  (setq-local make-backup-files nil)
   (ansi-color-apply-on-region (goto-char (point-min))
                               (save-excursion
                                 (forward-line emacs-pager-max-line-coloring)
