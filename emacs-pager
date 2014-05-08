@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'digest/md5'
+require 'fileutils'
 
 input = ARGF.read
 file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"

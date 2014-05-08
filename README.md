@@ -55,6 +55,21 @@ In your `.bashrc` or `.zshrc` file, put something like this
 
 Put `emacs-pager.el` somewhere on your load-path, and require it. Or,
 better then that, use something like el-get or quelpa to package it up
-in a sane manner and make it available that way.
+in a sane manner and make it available for requiring.
+
+Personally, I use (and love) quelpa, here is what I have in my configs
+
+    (quelpa '(emacs-pager :repo "mbriggs/emacs-pager" :fetcher github))
 
 Somewhere in your emacs init files, add the following line
+
+    (add-to-list 'auto-mode-alist '("\\.emacs-pager$" . emacs-pager-mode))
+
+### Usage
+
+`M-x shell`, and run a command that will invoke a pager (example would
+be `git log --pretty=oneline -n 20 --graph`). You should see the
+output in a new buffer. Press `q` to close the buffer.
+
+If you go to an external terminal and run the same command, you should
+see normal pager behaviour.
