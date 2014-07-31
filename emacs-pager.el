@@ -54,7 +54,7 @@
                                 (forward-line emacs-pager-max-line-coloring)
                                 (point)))
 
-  (setq buffer-name "*pager*")
+  (rename-buffer "*pager*")
   (read-only-mode))
 
 (provide 'emacs-pager)
