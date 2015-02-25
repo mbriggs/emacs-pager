@@ -18,7 +18,7 @@ shell, we will set `$PAGER` to a script, but only if emacs is
 currently running. That script will read the piped data, and write it
 to a file in `/tmp`, read it into emacs via `emacsclient`, and wait
 until emacs is done with it. In emacs, it will use a small mode for
-ANSI coloring and keybinds.
+ANSI coloring and keybindings.
 
 Given that sometimes things are paged because they are tens of thousands
 of lines long (or more), `emacs-pager` will only color the first 500 lines.
@@ -29,10 +29,12 @@ That number can be customized with `emacs-pager-max-line-coloring`
 Make sure you are running an emacs server, so `emacsclient` will
 work. This is what I currently use in my init.el
 
-
     (require 'server)
     (unless (server-running-p)
       (server-start))
+
+A similar stanza can be easily imported -- along with the required
+autoloads -- from `900emacs-pager.el` which is included here.
 
 Make sure that `emacsclient` is available on your path.
 
@@ -42,16 +44,22 @@ piped data, and sends it to emacs.
 
 In your `.bashrc` or `.zshrc` file, put something like this
 
-
     if [ $INSIDE_EMACS ]; then
-        export PAGER="emacs-pipe"
-    elif [ -x "`which less`" ]; then
-        export PAGER="`which less`"
-        export LESS="-isR"
-        alias lv="less"
+        PAGER="emacs-pager"
     else
-        export PAGER="/bin/more"
+	if [ -n $ZSH_VERSION ]; then
+            PAGER=$(whence -p less)
+	else
+            PAGER=$(type -p less)
+	fi
+	if [ -x "$PAGER" ]; then
+            export LESS="-isR"
+            alias lv="less"
+        else
+            PAGER="/bin/more"
+	fi
     fi
+    export PAGER
 
 Put `emacs-pager.el` somewhere on your load-path, and require it. Or,
 better then that, use something like el-get or quelpa to package it up
