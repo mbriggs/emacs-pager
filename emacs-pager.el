@@ -1,4 +1,4 @@
-;;; emacs-pager.el --- incredibly simple mode for showing data paged by emacs-pager
+;;; emacs-pager.el --- simple mode for showing data paged by emacs-pager
 
 ;; Copyright (C) 2014 Matt Briggs <http://mattbriggs.net>
 
@@ -48,7 +48,8 @@
 ;;;###autoload
 (define-derived-mode emacs-pager-mode fundamental-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
-  (setq-local make-backup-files nil)
+  (make-local-variable 'make-backup-files)
+  (setq make-backup-files nil)
   (ansi-color-apply-on-region (goto-char (point-min))
                               (save-excursion
                                 (forward-line emacs-pager-max-line-coloring)
