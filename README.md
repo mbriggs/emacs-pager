@@ -42,7 +42,6 @@ piped data, and sends it to emacs.
 
 In your `.bashrc` or `.zshrc` file, put something like this
 
-
     if [ $INSIDE_EMACS ]; then
         export PAGER="emacs-pager"
     elif [ -x "`which less`" ]; then
