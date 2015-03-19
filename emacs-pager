@@ -4,17 +4,38 @@ import tempfile
 import subprocess
 import sys
 
-# TODO: When this is run with -t pass the argument to emacsclient, so
-# that it's possible to use emacs-pager as the PAGER even outside of
-# *shell* buffers!
-if __name__ == '__main__':
+def stdin_pager():
+    '''Reads everything from standard input, saves it to a temporary file, and
+    fires up emacsclient on that temporary file, taking care to clean it up
+    when emacsclient exits for any reason.'''
     try:
         with tempfile.NamedTemporaryFile(suffix='.emacs-pager', mode='w+b') as f:
             bytes = sys.stdin.read()
             f.write(bytes)
             f.flush()
-            sys.exit(subprocess.call('emacsclient %s' % f.name, shell=True))
+            return subprocess.call('emacsclient %s' % f.name, shell=True)
     except KeyboardInterrupt, e:
         print >> sys.stderr, 'Interrupted'
         sys.exit(74)            # EX_IOERR from sysexits.h
-    sys.exit(1)                 # Should *not* be reached normally.
+    return 1                    # Normally, this should *not* be reached.
+
+def file_pager(file_name):
+    '''Fires up an emacsclient with the file_name open in 'view-mode'.'''
+    try:
+        return subprocess.call(
+            'emacsclient -t --eval "(view-file \\"%s\\")"' % (file_name),
+            shell=True)
+    except KeyboardInterrupt, e:
+        print >> sys.stderr, 'Interrupted'
+        sys.exit(74)            # EX_IOERR from sysexits.h
+    return 1                    # Normally, this should *not* be reached.
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    status = 0
+    if len(args) > 0:
+        for fn in args:
+            status = status or file_pager(fn)
+    else:
+        status = status or stdin_pager()
+    sys.exit(status)
