@@ -1,17 +1,20 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env python
 
-require 'digest/md5'
-require 'fileutils'
+import tempfile
+import subprocess
+import sys
 
-input = ARGF.read
-file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"
-
-File.open(file, 'w') do |f|
-  f.write(input)
-end
-
-puts 'reading into emacs...'
-
-`emacsclient #{file}`
-
-FileUtils.rm(file)
+# TODO: When this is run with -t pass the argument to emacsclient, so
+# that it's possible to use emacs-pager as the PAGER even outside of
+# *shell* buffers!
+if __name__ == '__main__':
+    try:
+        with tempfile.NamedTemporaryFile(suffix='.emacs-pager', mode='w+b') as f:
+            bytes = sys.stdin.read()
+            f.write(bytes)
+            f.flush()
+            sys.exit(subprocess.call('emacsclient %s' % f.name, shell=True))
+    except KeyboardInterrupt, e:
+        print >> sys.stderr, 'Interrupted'
+        sys.exit(74)            # EX_IOERR from sysexits.h
+    sys.exit(1)                 # Should *not* be reached normally.
