@@ -1,17 +1,41 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env python
 
-require 'digest/md5'
-require 'fileutils'
+import tempfile
+import subprocess
+import sys
 
-input = ARGF.read
-file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"
+def stdin_pager():
+    '''Reads everything from standard input, saves it to a temporary file, and
+    fires up emacsclient on that temporary file, taking care to clean it up
+    when emacsclient exits for any reason.'''
+    try:
+        with tempfile.NamedTemporaryFile(suffix='.emacs-pager', mode='w+b') as f:
+            bytes = sys.stdin.read()
+            f.write(bytes)
+            f.flush()
+            return subprocess.call('emacsclient %s' % f.name, shell=True)
+    except KeyboardInterrupt, e:
+        print >> sys.stderr, 'Interrupted'
+        sys.exit(74)            # EX_IOERR from sysexits.h
+    return 1                    # Normally, this should *not* be reached.
 
-File.open(file, 'w') do |f|
-  f.write(input)
-end
+def file_pager(file_name):
+    '''Fires up an emacsclient with the file_name open in 'view-mode'.'''
+    try:
+        return subprocess.call(
+            'emacsclient -t --eval "(view-file \\"%s\\")"' % (file_name),
+            shell=True)
+    except KeyboardInterrupt, e:
+        print >> sys.stderr, 'Interrupted'
+        sys.exit(74)            # EX_IOERR from sysexits.h
+    return 1                    # Normally, this should *not* be reached.
 
-puts 'reading into emacs...'
-
-`emacsclient #{file}`
-
-FileUtils.rm(file)
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    status = 0
+    if len(args) > 0:
+        for fn in args:
+            status = status or file_pager(fn)
+    else:
+        status = status or stdin_pager()
+    sys.exit(status)
