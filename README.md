@@ -44,7 +44,7 @@ In your `.bashrc` or `.zshrc` file, put something like this
 
 
     if [ $INSIDE_EMACS ]; then
-        export PAGER="emacs-pipe"
+        export PAGER="emacs-pager"
     elif [ -x "`which less`" ]; then
         export PAGER="`which less`"
         export LESS="-isR"
