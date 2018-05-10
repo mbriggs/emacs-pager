@@ -1,17 +1,12 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env bash
 
-require 'digest/md5'
-require 'fileutils'
+TMPFILE=$(mktemp "/tmp/XXXXXX.emacs-pager")
+trap "rm ${TMPFILE}" EXIT
 
-input = ARGF.read
-file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"
+while read line;do
+    echo "$line" >>${TMPFILE}
+done
 
-File.open(file, 'w') do |f|
-  f.write(input)
-end
+echo 'reading into emacs...'
 
-puts 'reading into emacs...'
-
-`emacsclient #{file}`
-
-FileUtils.rm(file)
+emacsclient ${TMPFILE}
