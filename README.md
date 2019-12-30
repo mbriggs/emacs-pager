@@ -12,13 +12,12 @@ changes at quite a few points.
 
 ### How this works
 
-Well-behaving unix programs will use whatever is in `$PAGER` when
-showing data that is too big to fit in a terminal screen. So in the
-shell, we will set `$PAGER` to a script, but only if emacs is
-currently running. That script will read the piped data, and write it
-to a file in `/tmp`, read it into emacs via `emacsclient`, and wait
-until emacs is done with it. In emacs, it will use a small mode for
-ANSI coloring and keybinds.
+Well-behaving unix programs will use whatever is in `$PAGER` when showing
+data that is too big to fit in a terminal screen. So in the shell, we will
+set `$PAGER` to a script. That script will read the piped data, and write
+it to a file in `/tmp`, read it into emacs via `emacsclient`, and wait
+until emacs is done with it. In emacs, it will use a small mode for ANSI
+coloring and keybinds.
 
 Given that sometimes things are paged because they are tens of thousands
 of lines long (or more), `emacs-pager` will only color the first 500 lines.
