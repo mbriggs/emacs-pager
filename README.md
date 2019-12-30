@@ -28,7 +28,6 @@ That number can be customized with `emacs-pager-max-line-coloring`
 Make sure you are running an emacs server, so `emacsclient` will
 work. This is what I currently use in my init.el
 
-
     (require 'server)
     (unless (server-running-p)
       (server-start))
@@ -39,11 +38,16 @@ Put `emacs-pager` (from this repository) somewhere in your path, and
 make sure it is executable. This will be the thing that accepts the
 piped data, and sends it to emacs.
 
-In your `.bashrc` or `.zshrc` file, put something like this
+To use `emacs-pager` as your default pager, set it as your `PAGER`
+environment variable in your shell init file:
 
+    export PAGER=emacs-pager
+
+Or, if you only want emacs-pager to be used from within Emacs (e.g. from
+shell-mode), put something like this:
 
     if [ $INSIDE_EMACS ]; then
-        export PAGER="emacs-pipe"
+        export PAGER="emacs-pager"
     elif [ -x "`which less`" ]; then
         export PAGER="`which less`"
         export LESS="-isR"
@@ -66,9 +70,15 @@ Somewhere in your emacs init files, add the following line
 
 ### Usage
 
-`M-x shell`, and run a command that will invoke a pager (example would
-be `git log --pretty=oneline -n 20 --graph`). You should see the
-output in a new buffer. Press `q` to close the buffer.
+If you set up your `PAGER` environment variable as described above,
+`emacs-pager` will be used automatically when needed (i.e. when output from
+a process would overflow the terminal).
 
-If you go to an external terminal and run the same command, you should
-see normal pager behaviour.
+Press `q` to close the `emacs-pager` buffer and clean up temp files.
+
+You can also pipe things to `emacs-pager` just like you would to `less`,
+for example:
+
+    ls | emacs-pager
+
+You might consider a shell alias of `alias eless=emacs-pager` for comfort.
