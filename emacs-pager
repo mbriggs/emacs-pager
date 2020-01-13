@@ -1,17 +1,34 @@
-#!/usr/bin/env ruby
+#!/bin/sh
 
-require 'digest/md5'
-require 'fileutils'
+# Based on https://github.com/mbriggs/emacs-pager/pull/2
 
-input = ARGF.read
-file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"
+tdir="/tmp/emacs-pager-$USER"
+mkdir -p "$tdir"
 
-File.open(file, 'w') do |f|
-  f.write(input)
-end
+# pages the file specified by $1, if any, otherwise stdin.
+pageone() {
+    local infile
+    local suffix
+    if [[ $# -gt 0 ]]; then
+        suffix=".$(basename $1)"
+        infile="$1"
+    else
+        suffix=".stdin"
+        infile="-"
+    fi
+    suffix="${suffix}.emacs-pager"
+    t=$(mktemp -p "$tdir" --suffix "$suffix") || exit 1
+    cat "$infile" > "$t"
+    trap "rm -f -- $t" EXIT
+    echo 'reading into emacs...'
+    emacsclient --tty -a "" "$t"
+}
 
-puts 'reading into emacs...'
-
-`emacsclient #{file}`
-
-FileUtils.rm(file)
+if [[ $# -eq 0 ]]; then
+    pageone
+else
+    while [[ $# -gt 0 ]]; do
+        pageone $1
+        shift
+    done
+fi

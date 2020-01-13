@@ -46,16 +46,13 @@
   (server-edit))
 
 ;;;###autoload
-(define-derived-mode emacs-pager-mode fundamental-mode "Pager"
+(define-derived-mode emacs-pager-mode special-mode "Pager"
   "Mode for viewing data paged by emacs-pager"
   (setq-local make-backup-files nil)
   (ansi-color-apply-on-region (goto-char (point-min))
                               (save-excursion
                                 (forward-line emacs-pager-max-line-coloring)
-                                (point)))
-
-  (setq buffer-name "*pager*")
-  (read-only-mode))
+                                (point))))
 
 (provide 'emacs-pager)
 
